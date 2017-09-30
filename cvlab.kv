@@ -1,0 +1,274 @@
+#: import CheckBox kivy.uix.checkbox
+
+<CustLabel@Label>:
+    color: 1, 1, 1, 1
+    size_hint: (1, None)
+    height: 30
+
+<ShortBoxLayout@BoxLayout>
+    size_hint: (1, None)
+    height: 30
+
+<ShortButton@Button>
+    size_hint: (1, None)
+    height: 30
+
+<ShortToggleButton@ToggleButton>
+    size_hint: (1, None)
+    height: 30
+
+<CustomPopup>:
+    size_hint: .5, .5
+    auto_dismiss: False
+    title: "The Popup"
+    Button:
+        text: "Close"
+        on_press: root.dismiss()
+
+CVLabLayout:
+
+<CVLabLayout>:
+    orientation: "horizontal"
+    padding: 10
+    spacing: 10
+    # first column
+    StackLayout:
+        orientation: 'tb-lr'
+        size_hint_x: .25
+        CustLabel:
+            text: "INPUT"
+            bold: True
+        ShortBoxLayout:
+            orientation: "horizontal"
+            CheckBox:
+                active: root.input_from_camera
+                group: "input_source"
+                value: root.input_from_camera
+            CustLabel:
+                text: "Camera"
+        ShortBoxLayout:
+            orientation: "horizontal"
+            CheckBox:
+                group: "input_source"
+                value: root.input_from_file
+            CustLabel:
+                text: "File"
+        ShortBoxLayout:
+            orientation: "horizontal"
+            Button:
+                size_hint_x: .25
+                text: 'Browse'
+                on_release: root.show_load(False)
+            CustLabel:
+                size_hint_x: .75
+                text: root.video_file_name
+        CustLabel:
+            text: 'Hint: use toggle buttons to open/close windows, top-right x may not be functional'
+            size_hint_y: None
+            text_size: self.width, None
+            height: self.texture_size[1]
+    StackLayout:
+        size_hint_x: .25
+        orientation: 'tb-lr'
+        CustLabel:
+            text: 'IMAGE FILTERS'
+            bold: True
+        ShortToggleButton:
+            text: "Grayscale"
+            on_release:
+                root.is_grayscale = not root.is_grayscale
+        ShortToggleButton:
+            text: "Laplacian ED"
+            on_release: root.is_lap = not root.is_lap
+        ShortToggleButton:
+            text: "Canny ED"
+            on_release: root.is_canny = not root.is_canny
+        ShortToggleButton:
+            text: "Gaussian blur"
+            on_release: root.is_gaussian = not root.is_gaussian
+        ShortToggleButton:
+            text: "Median blur"
+            on_release: root.is_median = not root.is_median
+        ShortToggleButton:
+            text: "Bilateral blur"
+            on_release: root.is_bilat = not root.is_bilat
+        ShortToggleButton:
+            text: "Hough circles"
+            on_release: root.is_circles = not root.is_circles
+        ShortToggleButton:
+            text: "Hough lines"
+            on_release: root.is_lines = not root.is_lines
+        ShortToggleButton:
+            text: "Harris corners"
+            on_release: root.is_harris = not root.is_harris
+        ShortToggleButton:
+            text: "Shi-Tomasi corners"
+            on_release: root.is_shi = not root.is_shi
+        ShortToggleButton:
+            text: "ORB"
+            on_release: root.is_orb = not root.is_orb
+
+    StackLayout:
+        size_hint_x: .25
+        orientation: 'tb-lr'
+        CustLabel:
+            text: 'ALGORITHM'
+            bold: True
+        CustLabel:
+            text: 'Linear Spatial Filtering:'
+            bold: True
+        Spinner:
+            size_hint: (1, None)
+            height: 30
+            id: alg_spinner
+            text: "Normalized Corr Coeff"
+            values: ('Square difference','Normalized Square Diff', 'Cross Correlation','Normalized Cross Corr','Coefficient','Normalized Corr Coeff')
+            on_text: root.lsf_selected()
+        CustLabel:
+            text: 'Do not track if:'
+            bold: True
+        ShortBoxLayout:
+            orientation: 'horizontal'
+            CustLabel:
+                size_hint_x: .75
+                text: 'corr value is < '
+            TextInput:
+                size_hint_x: .25
+                id: corr_threshold
+                height: 30
+                multiline: False
+                active: root.corr_threshold
+                text: '0.0'
+                on_text_validate: root.set_corr_thresh()
+        ShortBoxLayout:
+            orientation: 'horizontal'
+            CustLabel:
+                size_hint_x: .75
+                text: 'corr value is < corr mean *  '
+            TextInput:
+                size_hint_x: .25
+                id: corr_thresh_mean
+                height: 30
+                multiline: False
+                active: root.corr_threshold_mean
+                text: '0.0'
+                on_text_validate: root.set_corr_thresh_mean()
+        ShortBoxLayout:
+            orientation: 'horizontal'
+            CustLabel:
+                size_hint_x: .75
+                text: "Lowe's ratio test <"
+            TextInput:
+                size_hint_x: .25
+                id: lowes_id
+                height: 30
+                multiline: False
+                active: root.lowes_ratio
+                text: '1.0'
+                on_text_validate: root.set_lowes()
+
+        ShortToggleButton:
+            text: 'Auto detect failure (Lowes)'
+            on_release: root.is_auto_detect_failure = not root.is_auto_detect_failure
+
+        CustLabel:
+            text: 'Estimation:'
+            bold: True
+        ShortToggleButton:
+            text: 'Kalman with Inertia'
+            on_release: root.is_kalman = not root.is_kalman
+
+        CustLabel:
+            text: 'Feature Matching:'
+            bold: True
+        ShortToggleButton:
+            text: 'ORB with BF matching'
+            on_release: root.is_feature_matching = not root.is_feature_matching
+
+        ShortBoxLayout:
+            orientation: 'horizontal'
+            CustLabel:
+                size_hint_x: .75
+                text: 'Match Distance Threshold:'
+            TextInput:
+                size_hint_x: .25
+                id: match_dist
+                height: 30
+                multiline: False
+                active: root.match_dist_thresh
+                text: '50'
+                on_text_validate: root.set_match_dist_thresh()
+
+    StackLayout:
+        size_hint_x: .25
+        orientation: 'tb-lr'
+        CustLabel:
+            text: 'OUTPUT'
+            bold: True
+        ShortToggleButton:
+            text: 'Display Video'
+            on_release: root.display_video(self.state)
+
+        ShortBoxLayout:
+            orientation: 'horizontal'
+            ShortToggleButton:
+                size_hint_x: .35
+                text: 'Record'
+                on_release: root.record_toggled(self.state)
+            TextInput:
+                size_hint_x: .65
+                id: rec_text_input
+                size_hint: (1, None)
+                height: 30
+                multiline: False
+                active: root.recorded_vid_name
+                text: 'recording.avi'
+        CustLabel:
+            text: 'Tracking output:'
+            bold: True
+        ShortToggleButton:
+            text: 'Correlation (Corr) Map'
+            on_release: root.display_corr_map = not root.display_corr_map
+        CustLabel:
+            text: 'Charts:'
+            bold: True
+        ShortToggleButton:
+            text: 'Max Corr Chart'
+            on_release:
+                root.display_max_corr = not root.display_max_corr
+        ShortBoxLayout:
+            orientation: 'horizontal'
+            CustLabel:
+                size_hint_x: .35
+                text: 'Mean Corr:'
+            CustLabel:
+                size_hint_x: .65
+                id: mean_corr
+                active: root.mean_corr
+                text: root.mean_corr
+
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: file_chooser
+
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(file_chooser.path, file_chooser.selection)
+
+
+
+
+
